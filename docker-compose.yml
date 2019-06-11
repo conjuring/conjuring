@@ -1,0 +1,27 @@
+version: '3.4'
+services:
+ conjuring:
+  container_name: conjuring
+  image: casperdcl/conjuring:latest
+  build:
+   context: .
+   target: conjuring
+   cache_from:
+    - casperdcl/conjuring:core
+    - casperdcl/conjuring:latest
+   args:
+    GROUP_ID: ${GROUPS:-1000}
+  hostname: conjuring
+  restart: unless-stopped
+  ports:
+   - "8989:8000"
+  volumes:
+  - ./home_default:/opt/home_default
+ core:
+  image: casperdcl/conjuring:core
+  build:
+   context: .
+   target: core
+   cache_from:
+    - jupyterhub/jupyterhub:latest
+    - casperdcl/conjuring:core
