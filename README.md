@@ -48,13 +48,13 @@ Configuration files are all found within the `custom` directory.
 - Define student usernames and passwords
   + Modify `users.csv`
 - Define files which should be copied to each student's workspace
-  + Add files to `home_default`
+  + Add files to `home_default/`
 - Define packages to `apt install`
   + Modify `apt.txt`
 - Define packages to `conda install`
-  + Modify `requirements-conda.txt`
+  + Modify `environment.yml`
 - Define packages to `pip install`
-  + Modify `requirements-pip.txt`
+  + Modify `environment.yml` or `requirements.txt`
 
 # Glossary
 
