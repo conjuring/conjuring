@@ -21,6 +21,41 @@ instructions for all operating systems. Instead, we provide a docker container
 
 [geocomp]: TODO
 
+# Installation
+
+## Prerequisites
+- A machine which is accessible by students (e.g. via Ethernet or even a WiFi hotspot)
+- [Docker CE (Community Edition)][docker-ce]
+- [docker-compose][docker-compose]
+
+[docker-ce]: https://docs.docker.com/install/
+[docker-compose]: https://github.com/docker/compose/releases
+
+## Instructions
+1. Download and if necessary customise (see below)
+2. Run `docker-compose up -d`
+
+The Conjuring JupyterHub machine should be built and accessible via a browser on
+<https://localhost:8989>. You may have to add a security exception in your
+browser (Conjuring's SSL certificate is self-signed).
+
+To shut down, run `docker-compose down`.
+TODO: Student home directories will persist.
+
+### Customisation
+Configuration files are all found within the `custom` directory.
+
+- Define student usernames and passwords
+  + Modify `users.csv`
+- Define files which should be copied to each student's workspace
+  + Add files to `home_default`
+- Define packages to `apt install`
+  + Modify `apt.txt`
+- Define packages to `conda install`
+  + Modify `requirements-conda.txt`
+- Define packages to `pip install`
+  + Modify `requirements-pip.txt`
+
 # Glossary
 
 ## Software
