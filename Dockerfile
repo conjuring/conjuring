@@ -29,9 +29,39 @@ CMD ["jupyterhub"]
 
 FROM core as conjuring
 
+# TODO
+# ADD custom/apt.txt .
+# RUN apt update -qq && cat apt.txt | xargs apt install -yqq
+# RUN rm apt.txt
+
+# TODO
+# ADD custom/requirements-conda.txt .
+# RUN conda install --file requirements-conda.txt
+# RUN rm requirements-conda.txt
+
+# TODO: ADD custom/requirements-pip.txt .
+# RUN pip install -r requirements-pip.txt
+# RUN rm requirements-pip.txt
+
 # list of users
+#ARG GROUP_ID=1000
+#RUN groupadd -g ${GROUP_ID} conjuring
 RUN groupadd conjuring
 RUN useradd -D -s /bin/bash -N
 RUN useradd -r -G conjuring -m -p $(echo "duper" | openssl passwd -1 -stdin) super
+
+# TODO
+# ADD src/csv2useradd.sh .
+# ADD custom/users.csv .
+# RUN bash csv2useradd.sh users.csv
+# RUN rm users.csv
+RUN useradd -g conjuring -m -p $(echo "bar" | openssl passwd -1 -stdin) foo
+
+# jupyterhub config
+#ADD src/srv/* /srv/jupyterhub/
+#RUN chmod 600 /srv/jupyterhub/*.key
+#RUN chmod 664 /srv/jupyterhub/*.cert
+# unnecessary
+#RUN jupyterhub --generate-certs  # internal_ssl
 
 ENV DEBIAN_FRONTEND ''

@@ -1,0 +1,13 @@
+#name: example-environment
+channels:
+ - conda-forge
+dependencies:
+ - pip
+ - notebook
+ - jupyterlab
+ - python
+ - numpy
+ - matplotlib
+ - pip:
+  - tqdm
+  #- nbgitpuller

@@ -13,10 +13,16 @@ services:
    args:
     GROUP_ID: ${GROUPS:-1000}
   hostname: conjuring
+  # cap_add:
+  #  - NET_ADMIN
+  # network_mode: "host"  # host only works on linux: https://docs.docker.com/network/host/
+  #runtime: nvidia
   restart: unless-stopped
+  shm_size: 4gb
   ports:
    - "8989:8000"
   volumes:
+  #- home:/home
   - ./home_default:/opt/home_default
  core:
   image: casperdcl/conjuring:core
