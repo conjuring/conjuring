@@ -4,7 +4,7 @@ LABEL com.jupyter.date="2019-07-01"  # modified version of above on this date
 LABEL org.jupyter.service="jupyterhub"
 
 # install nodejs, utf8 locale, set CDN because default httpredir is unreliable
-RUN apt-get -yqq update && apt-get -yqq upgrade &&  apt-get -yqq install \
+RUN apt-get -yqq update && apt-get -yqq upgrade && apt-get -yqq install \
   wget git bzip2 \
   && apt-get purge && apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -29,9 +29,26 @@ CMD ["jupyterhub"]
 
 FROM core as conjuring
 
+COPY custom/apt.txt .
+RUN apt-get -yqq update && (cat apt.txt | xargs apt-get -yqq install)
+  && apt-get purge && apt-get clean && rm -rf /var/lib/apt/lists/* apt.txt
+
+COPY custom/environment.yml .
+RUN conda env update && rm environment.yml
+
+COPY custom/requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt && rm requirements.txt
+
 # list of users
-RUN groupadd conjuring
+ARG GROUP_ID=1000
+RUN groupadd -g ${GROUP_ID} conjuring
 RUN useradd -D -s /bin/bash -N
-RUN useradd -r -G conjuring -m -p $(echo "duper" | openssl passwd -1 -stdin) super
+COPY src/csv2useradd.sh .
+COPY custom/users.csv custom/home_default .
+RUN bash csv2useradd.sh users.csv home_default && rm -r users.csv home_default
+
+# jupyterhub config
+COPY custom/srv/* /srv/jupyterhub/
+#RUN jupyterhub --generate-certs  # internal_ssl unnecessary
 
 ENV DEBIAN_FRONTEND ''

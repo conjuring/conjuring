@@ -7,25 +7,29 @@ services:
    context: .
    target: conjuring
    cache_from:
-    - casperdcl/conjuring:base
-    - casperdcl/conjuring:core
-    - casperdcl/conjuring:latest
+   - casperdcl/conjuring:base
+   - casperdcl/conjuring:core
+   - casperdcl/conjuring:latest
    args:
     GROUP_ID: ${GROUPS:-1000}
   hostname: conjuring
+  #network_mode: host
+  #runtime: nvidia
+  #shm_size: 4gb
   restart: unless-stopped
   ports:
-   - "8989:8000"
+  - "8989:8000"
   volumes:
-  - ./home_default:/opt/home_default
+  - ./custom/shared:/shared:ro
+  - ./custom/home_default:/opt/home_default
  core:
   image: casperdcl/conjuring:core
   build:
    context: .
    target: core
    cache_from:
-    - casperdcl/conjuring:base
-    - casperdcl/conjuring:core
+   - casperdcl/conjuring:base
+   - casperdcl/conjuring:core
  base:
   image: casperdcl/conjuring:base
   build:
@@ -33,4 +37,4 @@ services:
    dockerfile: base.Dockerfile
    target: base
    cache_from:
-    - casperdcl/conjuring:base
+   - casperdcl/conjuring:base

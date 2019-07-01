@@ -55,6 +55,16 @@ Configuration files are all found within the `custom` directory.
   + Modify `environment.yml`
 - Define packages to `pip install`
   + Modify `environment.yml` or `requirements.txt`
+- Define read-only files which should be shared for all students
+  + Add files to `shared/`
+
+### Auto-boot
+
+A physical server can be configured to automatically start conjuring upon
+bootup, and monitor for external USB drives with additional configuration.
+
+Use the `autoboot.sh` script for this purpose. The path monitored for USB
+configuration folder is `/media/*/*/conjuring/custom`.
 
 # Glossary
 
