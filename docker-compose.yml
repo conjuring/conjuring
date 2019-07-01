@@ -7,6 +7,7 @@ services:
    context: .
    target: conjuring
    cache_from:
+    - casperdcl/conjuring:base
     - casperdcl/conjuring:core
     - casperdcl/conjuring:latest
    args:
@@ -23,5 +24,13 @@ services:
    context: .
    target: core
    cache_from:
-    - jupyterhub/jupyterhub:latest
+    - casperdcl/conjuring:base
     - casperdcl/conjuring:core
+ base:
+  image: casperdcl/conjuring:base
+  build:
+   context: .
+   dockerfile: base.Dockerfile
+   target: base
+   cache_from:
+    - casperdcl/conjuring:base
