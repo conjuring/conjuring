@@ -1,6 +1,7 @@
 FROM casperdcl/conjuring:base as core
 LABEL com.jupyter.source="https://hub.docker.com/r/jupyterhub/jupyterhub/dockerfile"
-LABEL com.jupyter.date="2019-07-01"  # modified version of above on this date
+# modified version of above on this date
+LABEL com.jupyter.date="2019-07-01"
 LABEL org.jupyter.service="jupyterhub"
 
 # install nodejs, utf8 locale, set CDN because default httpredir is unreliable
@@ -14,9 +15,9 @@ RUN wget -q https://repo.continuum.io/miniconda/Miniconda3-4.5.11-Linux-x86_64.s
   && bash /tmp/miniconda.sh -f -b -p /opt/conda \
   && rm /tmp/miniconda.sh \
   && /opt/conda/bin/conda update --all -y -c conda-forge \
-  && /opt/conda/bin/conda install -y -c conda-forge python=3.6 \
+  && /opt/conda/bin/conda install -y -c conda-forge \
     sqlalchemy tornado jinja2 traitlets requests pip pycurl nodejs configurable-http-proxy \
-  && /opt/conda/bin/pip install -U pip
+  && /opt/conda/bin/pip install -U pip \
   && /opt/conda/bin/conda install -y notebook jupyterlab
 ENV PATH=/opt/conda/bin:$PATH
 
@@ -30,7 +31,7 @@ CMD ["jupyterhub"]
 FROM core as conjuring
 
 COPY custom/apt.txt .
-RUN apt-get -yqq update && (cat apt.txt | xargs apt-get -yqq install)
+RUN apt-get -yqq update && (cat apt.txt | xargs apt-get -yqq install) \
   && apt-get purge && apt-get clean && rm -rf /var/lib/apt/lists/* apt.txt
 
 COPY custom/environment.yml .

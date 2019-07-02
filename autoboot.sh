@@ -26,7 +26,7 @@ usb_monitor(){
         # TODO: check for multiple USB?
         dcc down
         # TODO: maybe don't bring container down?
-        dcc build --pull base core conjuring && dcc up -d conjuring
+        dcc build --pull base && dcc build core conjuring && dcc up -d conjuring
       )
     fi
     sleep 1
@@ -39,7 +39,7 @@ dcc(){
   docker-compose $@
   popd
 }
-dcc build --pull base core conjuring && dcc up -d conjuring
+dcc build --pull base && dcc build core conjuring && dcc up -d conjuring
 
 usb_monitor &
 wait
