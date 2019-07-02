@@ -36,7 +36,7 @@ services:
   image: casperdcl/conjuring:base
   build:
    context: .
-   dockerfile: base.Dockerfile
+   dockerfile: custom/base.Dockerfile
    target: base
    cache_from:
    - casperdcl/conjuring:base

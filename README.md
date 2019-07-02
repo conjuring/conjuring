@@ -45,18 +45,20 @@ TODO: actually ensure this.
 ### Customisation
 Configuration files are all found within the `custom` directory.
 
-- Define student usernames and passwords
-  + Modify `users.csv`
-- Define files which should be copied to each student's workspace
-  + Add files to `home_default/`
 - Define packages to `apt install`
   + Modify `apt.txt`
 - Define packages to `conda install`
   + Modify `environment.yml`
 - Define packages to `pip install`
   + Modify `environment.yml` or `requirements.txt`
+- Define student usernames and passwords
+  + Modify `users.csv` (first row is a header and is ignored)
+- Define files which should be copied to each student's workspace
+  + Add files to `home_default/`
 - Define read-only files which should be shared for all students
   + Add files to `shared/`
+- Change the base image to something other than `ubuntu:18.04`
+  + Modify `base.Dockerfile`
 
 ### Auto-boot
 
