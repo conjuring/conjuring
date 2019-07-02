@@ -2,7 +2,7 @@
 
 # Options
 WORKDIR=${PWD}
-CUSTOM_DIR='/media/*/conjuring/custom'
+CUSTOM_DIR='/media/*/*/conjuring/custom'
 
 # auto-start WiFi hotspot
 # TODO
