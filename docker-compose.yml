@@ -22,6 +22,7 @@ services:
   volumes:
   - ./custom/shared:/shared:ro
   - ./custom/home_default:/opt/home_default
+  - ./custom/home:/persist-home
  core:
   image: casperdcl/conjuring:core
   build:
@@ -30,6 +31,7 @@ services:
    cache_from:
    - casperdcl/conjuring:base
    - casperdcl/conjuring:core
+  command: ["/bin/bash", "-c", "exit 0"]
  base:
   image: casperdcl/conjuring:base
   build:
@@ -38,3 +40,4 @@ services:
    target: base
    cache_from:
    - casperdcl/conjuring:base
+  command: ["/bin/bash", "-c", "exit 0"]

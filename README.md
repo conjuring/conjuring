@@ -36,11 +36,11 @@ instructions for all operating systems. Instead, we provide a docker container
 2. Run `docker-compose up -d`
 
 The Conjuring JupyterHub machine should be built and accessible via a browser on
-<https://localhost:8989>. You may have to add a security exception in your
-browser (Conjuring's SSL certificate is self-signed).
+<https://localhost:8989>.
 
 To shut down, run `docker-compose down`.
-TODO: Student home directories will persist.
+Student home directories will persist in the `custom/home/` folder.
+TODO: actually ensure this.
 
 ### Customisation
 Configuration files are all found within the `custom` directory.

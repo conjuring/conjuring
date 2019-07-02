@@ -18,7 +18,8 @@ RUN wget -q https://repo.continuum.io/miniconda/Miniconda3-4.5.11-Linux-x86_64.s
   && /opt/conda/bin/conda install -y -c conda-forge \
     sqlalchemy tornado jinja2 traitlets requests pip pycurl nodejs configurable-http-proxy \
   && /opt/conda/bin/pip install -U pip \
-  && /opt/conda/bin/conda install -y notebook jupyterlab
+  && /opt/conda/bin/conda install -y -c conda-forge notebook jupyterlab \
+  && /opt/conda/bin/conda clean -a -y
 ENV PATH=/opt/conda/bin:$PATH
 
 RUN pip install --no-cache-dir -U jupyterhub
@@ -35,7 +36,7 @@ RUN apt-get -yqq update && (cat apt.txt | xargs apt-get -yqq install) \
   && apt-get purge && apt-get clean && rm -rf /var/lib/apt/lists/* apt.txt
 
 COPY custom/environment.yml .
-RUN conda env update && rm environment.yml
+RUN conda env update -n base && conda clean -a -y && rm environment.yml
 
 COPY custom/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt && rm requirements.txt
@@ -45,8 +46,9 @@ ARG GROUP_ID=1000
 RUN groupadd -g ${GROUP_ID} conjuring
 RUN useradd -D -s /bin/bash -N
 COPY src/csv2useradd.sh .
-COPY custom/users.csv custom/home_default .
-RUN bash csv2useradd.sh users.csv home_default && rm -r users.csv home_default
+COPY custom/users.csv .
+COPY custom/home_default ./home_default
+RUN bash csv2useradd.sh users.csv ./home_default && rm -r users.csv home_default
 
 # jupyterhub config
 COPY custom/srv/* /srv/jupyterhub/

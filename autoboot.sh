@@ -10,6 +10,19 @@ CUSTOM_DIR='/media/*/conjuring/custom'
 # sshserver
 sudo service ssh stop
 
+# docker container with mounted shared folder(s)
+dcc(){
+  pushd $WORKDIR
+  docker-compose $@
+  popd
+}
+dccup(){
+  dcc build --pull base
+  dcc build conjuring
+  dcc build conjuring
+  dcc up -d conjuring
+}
+
 # monitor for a USB storage device containing additional config
 usb_monitor(){
   while [ true ]; do
@@ -26,20 +39,15 @@ usb_monitor(){
         # TODO: check for multiple USB?
         dcc down
         # TODO: maybe don't bring container down?
-        dcc build --pull base && dcc build core conjuring && dcc up -d conjuring
+        dccup
       )
     fi
     sleep 1
   done
 }
 
-# docker container with mounted shared folder(s)
-dcc(){
-  pushd $WORKDIR
-  docker-compose $@
-  popd
-}
-dcc build --pull base && dcc build core conjuring && dcc up -d conjuring
+# build and run container
+dccup
 
 usb_monitor &
 wait
