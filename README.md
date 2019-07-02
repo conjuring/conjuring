@@ -36,7 +36,7 @@ instructions for all operating systems. Instead, we provide a docker container
 2. Run `docker-compose up -d`
 
 The Conjuring JupyterHub machine should be built and accessible via a browser on
-<https://localhost:8989>.
+<http://localhost:8989>.
 
 To shut down, run `docker-compose down`.
 Student home directories will persist in the `custom/home/` folder.
@@ -65,8 +65,10 @@ Configuration files are all found within the `custom` directory.
 A physical server can be configured to automatically start conjuring upon
 bootup, and monitor for external USB drives with additional configuration.
 
-Use the `autoboot.sh` script for this purpose. The path monitored for USB
+Use the `autoboot.sh` script for this purpose. The path monitored for a
 configuration folder is `/media/*/*/conjuring/custom`.
+
+TODO: `cron`, sync policy.
 
 # Glossary
 

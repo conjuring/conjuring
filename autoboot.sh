@@ -38,7 +38,7 @@ usb_monitor(){
         # TODO: copy missing back? cp -au "$WORKDIR"/custom "$CUSTOM_DIR"/..
         # TODO: check for multiple USB?
         dcc down
-        # TODO: maybe don't bring container down?
+        # TODO: maybe don't bring container down if updateable live?
         dccup
       )
     fi
