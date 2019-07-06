@@ -22,7 +22,7 @@ services:
   volumes:
   - ./custom/shared:/shared:ro
   - ./custom/home_default:/opt/home_default
-  - ./custom/home:/persist-home
+  - ./custom/home:/home
  core:
   image: casperdcl/conjuring:core
   build:

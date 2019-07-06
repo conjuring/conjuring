@@ -39,8 +39,8 @@ The Conjuring JupyterHub machine should be built and accessible via a browser on
 <http://localhost:8989>.
 
 To shut down, run `docker-compose down`.
-Student home directories will persist in the `custom/home/` folder.
-TODO: actually ensure this.
+Student home directories will persist in the `custom/home/` folder with the
+correct access permissions.
 
 ### Customisation
 Configuration files are all found within the `custom` directory.
@@ -61,7 +61,6 @@ Configuration files are all found within the `custom` directory.
   + Modify `base.Dockerfile`
 
 ### Auto-boot
-
 A physical server can be configured to automatically start conjuring upon
 bootup, and monitor for external USB drives with additional configuration.
 

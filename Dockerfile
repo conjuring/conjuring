@@ -49,9 +49,12 @@ COPY src/csv2useradd.sh .
 COPY custom/users.csv .
 COPY custom/home_default ./home_default
 RUN bash csv2useradd.sh users.csv ./home_default && rm -r users.csv home_default
+RUN mv /home /opt/home-init
 
 # jupyterhub config
 COPY custom/srv/* /srv/jupyterhub/
 #RUN jupyterhub --generate-certs  # internal_ssl unnecessary
 
 ENV DEBIAN_FRONTEND ''
+COPY src/entrypoint.sh /bin/
+CMD ["/bin/entrypoint.sh"]
