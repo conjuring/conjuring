@@ -11,6 +11,9 @@ for d in $(ls -d *); do
   if [ -d $d ]; then
     # copy if does not already exist (TODO: one-way sync?)
     [ -d /home/$d ] || cp -a $d /home/
+    # ensure correct user permissions
+    # since UID could have been altered by modifying users.csv
+    id $d && chown -R $d:conjuring /home/$d
   fi
 done
 popd
