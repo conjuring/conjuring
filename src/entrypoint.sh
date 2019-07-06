@@ -6,8 +6,13 @@
 
 #chmod 755 /home
 #chown root:root /home
-for d in $(ls -d /opt/home-init/*); do
-  cp -a $d /home/
+pushd /opt/home-init
+for d in $(ls -d *); do
+  if [ -d $d ]; then
+    # copy if does not already exist (TODO: one-way sync?)
+    [ -d /home/$d ] || cp -a $d /home/
+  fi
 done
+popd
 
 jupyterhub
