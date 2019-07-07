@@ -12,6 +12,8 @@ services:
    - casperdcl/conjuring:latest
    args:
     GROUP_ID: ${GROUPS:-1000}
+  depends_on:
+  - core
   hostname: conjuring
   #network_mode: host
   #runtime: nvidia
@@ -31,6 +33,8 @@ services:
    cache_from:
    - casperdcl/conjuring:base
    - casperdcl/conjuring:core
+  depends_on:
+  - base
   command: ["/bin/bash", "-c", "exit 0"]
  base:
   image: casperdcl/conjuring:base
