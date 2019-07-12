@@ -33,7 +33,7 @@ instructions for all operating systems. Instead, we provide a docker container
 
 ## Instructions
 1. Download and if necessary customise (see below)
-2. Run `docker-compose up -d`
+2. Run `docker-compose up --build -d`
 
 The Conjuring JupyterHub machine should be built and accessible via a browser on
 <http://localhost:8989>.
