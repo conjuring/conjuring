@@ -8,7 +8,7 @@ CUSTOM_DIR='/media/*/*/conjuring/custom'
 # TODO
 
 # sshserver
-sudo service ssh stop
+sudo service ssh start
 
 # docker container with mounted shared folder(s)
 dcc(){
@@ -18,9 +18,7 @@ dcc(){
 }
 dccup(){
   dcc build --pull base
-  dcc build conjuring
-  dcc build conjuring
-  dcc up -d conjuring
+  dcc up --build -d
 }
 
 # monitor for a USB storage device containing additional config
