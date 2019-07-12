@@ -1,11 +1,10 @@
-#name: example-environment
+name: base  # create a new file called environment-<name>.yml for alternative kernels
 channels:
 - conda-forge
 dependencies:
+- python=3
 - pip
 - numpy
-- scipy
-- matplotlib
 - pip:
   - tqdm
   #- nbgitpuller

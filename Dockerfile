@@ -4,7 +4,6 @@ LABEL com.jupyter.source="https://hub.docker.com/r/jupyterhub/jupyterhub/dockerf
 LABEL com.jupyter.date="2019-07-01"
 LABEL org.jupyter.service="jupyterhub"
 
-# install nodejs, utf8 locale, set CDN because default httpredir is unreliable
 RUN apt-get -yqq update && apt-get -yqq upgrade && apt-get -yqq install \
   wget git bzip2 \
   && apt-get purge && apt-get clean && rm -rf /var/lib/apt/lists/*
@@ -35,8 +34,8 @@ COPY custom/apt.txt .
 RUN apt-get -yqq update && (cat apt.txt | xargs apt-get -yqq install) \
   && apt-get purge && apt-get clean && rm -rf /var/lib/apt/lists/* apt.txt
 
-COPY custom/environment.yml .
-RUN conda env update -n base && conda clean -a -y && rm environment.yml
+COPY src/env2conda.sh custom/environment*.yml ./
+RUN ./env2conda.sh /opt/conda environment*.yml && conda clean -a -y && rm env2conda.sh environment*.yml
 
 COPY custom/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt && rm requirements.txt

@@ -51,6 +51,8 @@ Configuration files are all found within the `custom` directory.
   + Modify `environment.yml`
 - Define packages to `pip install`
   + Modify `environment.yml` or `requirements.txt`
+- Define alternative environments (kernels)
+  + Create `environment-<name>.yml` files
 - Define student usernames and passwords
   + Modify `users.csv` (first row is a header and is ignored)
 - Define files which should be copied to each student's workspace
