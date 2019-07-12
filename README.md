@@ -15,13 +15,15 @@ to access their Python workspace. The Python web interface is called *Jupyter*.
 *JupyterHub* is used to manage multiple student accounts; each with their own
 isolated workspace.
 
-JupyterHub recommends "The Littlest JupyterHub (TLJH)" or "Zero to JupyterHub
-(Z2JH)" to install, neither of which are appropriate in our case. We thus
+JupyterHub recommends "The Littlest JupyterHub ([TLJH])" or "Zero to JupyterHub
+([Z2JH])" to install, neither of which are appropriate in our case. We thus
 manually install it ourselves. It would be painful to provide installation
 instructions for all operating systems. Instead, we provide a docker container
 (which can run on any supported OS). The container itself runs Ubuntu 18.04.
 
 [geocomp]: TODO
+[TLJH]: https://tljh.jupyter.org
+[Z2JH]: https://z2jh.jupyter.org
 
 # Installation
 
@@ -49,28 +51,28 @@ correct access permissions.
 Configuration files are all found within the `custom` directory.
 
 - Define packages to `apt install`
-    + Modify `apt.txt`
+    + Modify [apt.txt](custom/apt.txt)
 - Define packages to `conda install`
-    + Modify `environment.yml`
+    + Modify [environment.yml](custom/environment.yml)
 - Define packages to `pip install`
-    + Modify `environment.yml` or `requirements.txt`
+    + Modify [environment.yml](custom/environment.yml) or [requirements.txt](custom/requirements.txt)
 - Define alternative environments (kernels)
     + Create `environment-<name>.yml` files
 - Define student usernames and passwords
-    + Modify `users.csv` (first row is a header and is ignored)
+    + Modify [users.csv](custom/users.csv) (first row is a header and is ignored)
 - Define files which should be copied to each student's workspace
-    + Add files to `home_default/`
+    + Add files to [home_default/](custom/home_default/)
 - Define read-only files which should be shared for all students
-    + Add files to `shared/`
+    + Add files to [shared/](custom/shared/)
 - Change the base image to something other than `ubuntu:18.04`
-    + Modify `base.Dockerfile`
+    + Modify [base.Dockerfile](custom/base.Dockerfile)
 
 ### Auto-boot
 A physical server can be configured to automatically start conjuring upon
 bootup, and monitor for external USB drives with additional configuration.
 
-Use the `autoboot.sh` script for this purpose. The path monitored for a
-configuration folder is `/media/*/*/conjuring/custom`.
+Use the [autoboot.sh](autoboot.sh) script for this purpose.
+The path monitored for a configuration folder is `/media/*/*/conjuring/custom`.
 
 TODO: `cron`, sync policy.
 
