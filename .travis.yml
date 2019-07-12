@@ -1,0 +1,13 @@
+language: python
+services:
+- docker
+notifications:
+ email: false
+install:
+- export DCC="docker-compose -p travis_${TRAVIS_JOB_NUMBER/./_}"
+- $DCC build --pull base
+- $DCC build
+script:
+- $DCC up -d
+- $DCC exec conjuring bash -c "conda env list"
+- $DCC down
