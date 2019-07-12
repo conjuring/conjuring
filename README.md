@@ -1,5 +1,7 @@
 # Conjuring
 
+[![CI-badge]][CI]
+
 *Conjuring* provides an easy way for students and teachers to use Python for a
 course.
 
@@ -152,3 +154,6 @@ editor) which runs in a web browser
 ## Websites
 
 - *GitHub*: a website which hosts many *git* repositories
+
+[CI-badge]: https://travis-ci.com/casperdcl/conjuring.svg?token=fZcPAkurhLa1iecqAFAV&branch=master
+[CI]: https://travis-ci.com/casperdcl/conjuring
