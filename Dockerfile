@@ -28,6 +28,10 @@ WORKDIR /srv/jupyterhub/
 EXPOSE 8000
 CMD ["jupyterhub"]
 
+## first half (rarely changing core) complete ##
+## ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ##
+## second half (user customisable build) ##
+
 FROM core as conjuring
 
 COPY custom/apt.txt .

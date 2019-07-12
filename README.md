@@ -24,7 +24,8 @@ instructions for all operating systems. Instead, we provide a docker container
 # Installation
 
 ## Prerequisites
-- A machine which is accessible by students (e.g. via Ethernet or even a WiFi hotspot)
+- A machine which is accessible by students
+  (e.g. via Ethernet or even a WiFi hotspot)
 - [Docker CE (Community Edition)][docker-ce]
 - [docker-compose][docker-compose]
 
@@ -46,21 +47,21 @@ correct access permissions.
 Configuration files are all found within the `custom` directory.
 
 - Define packages to `apt install`
-  + Modify `apt.txt`
+    + Modify `apt.txt`
 - Define packages to `conda install`
-  + Modify `environment.yml`
+    + Modify `environment.yml`
 - Define packages to `pip install`
-  + Modify `environment.yml` or `requirements.txt`
+    + Modify `environment.yml` or `requirements.txt`
 - Define alternative environments (kernels)
-  + Create `environment-<name>.yml` files
+    + Create `environment-<name>.yml` files
 - Define student usernames and passwords
-  + Modify `users.csv` (first row is a header and is ignored)
+    + Modify `users.csv` (first row is a header and is ignored)
 - Define files which should be copied to each student's workspace
-  + Add files to `home_default/`
+    + Add files to `home_default/`
 - Define read-only files which should be shared for all students
-  + Add files to `shared/`
+    + Add files to `shared/`
 - Change the base image to something other than `ubuntu:18.04`
-  + Modify `base.Dockerfile`
+    + Modify `base.Dockerfile`
 
 ### Auto-boot
 A physical server can be configured to automatically start conjuring upon
@@ -71,27 +72,83 @@ configuration folder is `/media/*/*/conjuring/custom`.
 
 TODO: `cron`, sync policy.
 
+# FAQ
+
+## How does it all work?
+
+If you are not familiar with docker, it may seem quite complicated.
+This overview (combined with the [glossary](#glossary) below) might help.
+
+`docker-compose` reads `docker-compose.yml` (and if it exits,
+`docker-compose.override.yml`) in order to make the following happen:
+
+1. `docker` downloads the latest version of the `ubuntu:18.04` *image*
+2. `docker` follows the instructions in
+   [custom/base.Dockerfile](custom/base.Dockerfile) to (re)build
+   an *image* called `casperdcl/conjuring:base` (based on `ubuntu:18.04`)
+3. `docker` follows the instructions in the first half of
+   [Dockerfile](Dockerfile) to (re)build an *image* called
+   `casperdcl/conjuring:core` (based on `casperdcl/conjuring:base`)
+4. `docker` follows the instructions in the second half of
+   [Dockerfile](Dockerfile) to (re)build an *image* called
+   `casperdcl/conjuring:latest` (based on `casperdcl/conjuring:core`)
+    - this references files from the [src/](src/) and [custom/](custom/)
+      directories to create users and Jupyter environments
+5. `docker` creates a *container* called `conjuring`
+   (based on `casperdcl/conjuring:latest`) which also does the following:
+    - links [custom/home/](custom/home/) to `conjuring:/home/`
+    - populates the container user home directories (`conjuring:/home/*`)
+        * links `custom/shared`
+    - starts a `JupyterHub` server accessible on the host at
+      <http://localhost:8989>
+
+All builds are "cached", i.e. unchanged lines from `*Dockerfile` will be not
+actually be re-run; saving time and bandwidth. Note that a line which references
+a changed file (from [src/](src/) or [custom/](custom/)) also counts as a
+changed line.
+
+Run `docker system prune` to clear unused cache.
+
 # Glossary
+
+- *Base image*: the starting point for building a Docker *image*
+    + analogous to a clean OS (in this case `ubuntu:18.04`)
+- *Layer*: a single (cached) build step
+    + usually represented by a single line in a `Dockerfile`
+      (e.g. `apt-get install git`)
+- *Image*: a sequence of *layers* (applied on top of a *base image*)
+    + analogous to a clean OS with things set up as specified in `custom/`
+      (in this case *tagged* `casperdcl/conjuring:latest`)
+- *Container*: a sandboxed workspace derived from an *image*
+    + analogous to a running virtual machine (in this case named `conjuring`)
+    + easily stoppable, restartable, and disposable
+    + can be thought of as end-user-created *layers* which would never be
+      formally part of a redistributable *image*
+    + can share files, network connections, and devices with the host computer
+
+*Images* are *pulled* or *built*. *Containers* are *created* from them:
+
+- *Pull*: typically refers to downloading an *image* from the internet (which someone else *built*)
+    + usually only required when there is no source code available to allow for *building* locally (e.g. `ubuntu:18.04`)
+- *Build*: typically refers to *pulling* a *base image*, then *building* all the *layers* necessary to form an *image*
+    + usually once-off
+- *Create*: typically refers to making a *container* from an *image*
+    + often recreated for a semi-clean slate - especially if data is shared with the host computer so that no data is lost on disposal
 
 ## Software
 
-Python
-: A programming language designed to be very human-readable.
+- *Python*: a programming language designed to be very human-readable
 
-Jupyter
-: An IDE (integrated development environment -- i.e. glorified text editor) which
-runs in a web browser.
+- *Jupyter*: an IDE (integrated development environment -- i.e. glorified text
+editor) which runs in a web browser
 
-JupyterHub
-: A tool to manage multiple Jupyter servers for multiple users.
+- *JupyterHub*: a tool to manage multiple Jupyter servers for multiple users
 
-git
-: A code version control tool
+- *git*: a code version control tool
 
-Docker
-: A virtual machine replacement tool. Allows running e.g. isolated Ubuntu Linux JupyterHub containers on any host operating system.
+- *Docker*: a virtual machine replacement tool
+    + allows running e.g. isolated Ubuntu Linux JupyterHub containers on any host operating system
 
 ## Websites
 
-GitHub
-: A website which hosts many git repositories
+- *GitHub*: a website which hosts many *git* repositories
