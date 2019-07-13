@@ -1,9 +1,11 @@
 REPO=conjuring
 DCC=docker-compose
 
-default: build up bash down
+default: buildup bash down
 up:
 	$(DCC) up -d $(REPO)
+buildup:
+	$(DCC) up --build -d $(REPO)
 down:
 	$(DCC) down
 build:
