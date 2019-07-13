@@ -10,4 +10,5 @@ install:
 script:
 - $DCC up -d
 - $DCC exec conjuring bash -c "conda env list"
+- $DCC exec conjuring bash -c "ls -la /home/"
 - $DCC down

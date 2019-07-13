@@ -101,8 +101,9 @@ exits, `docker-compose.override.yml`) in order to make the following happen:
 5. `docker` creates a *container* called `conjuring`
    (based on `casperdcl/conjuring:latest`) which also does the following:
     - links [custom/home/](custom/home/) to `conjuring:/home/`
+    - links [custom/home_default/](custom/home_default) (read-only)
     - populates the container user home directories (`conjuring:/home/*`)
-        * links [custom/shared/](custom/shared)
+        * links [custom/shared/](custom/shared) (read-only)
     - starts a `JupyterHub` server accessible on the host at
       <http://localhost:8989>
 
