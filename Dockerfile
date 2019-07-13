@@ -48,11 +48,8 @@ RUN pip install --no-cache-dir -r requirements.txt && rm requirements.txt
 ARG GROUP_ID=1000
 RUN groupadd -g ${GROUP_ID} conjuring
 RUN useradd -D -s /bin/bash -N
-COPY src/csv2useradd.sh .
-COPY custom/users.csv .
-COPY custom/home_default ./home_default
-RUN bash csv2useradd.sh users.csv ./home_default && rm -r users.csv home_default
-RUN mv /home /opt/home-init
+COPY src/csv2useradd.sh custom/users.csv /opt/
+RUN chmod 400 /opt/users.csv  # keep it secret from container users
 
 # jupyterhub config
 COPY custom/srv/* /srv/jupyterhub/

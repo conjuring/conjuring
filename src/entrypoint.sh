@@ -4,15 +4,16 @@
 # NB: As with a host-based system, due to security/access permissions,
 # it will likely will need sudo/root to access from the host.
 
+# create users and populate home directories if necessary
+/opt/csv2useradd.sh /opt/users.csv /opt/home_default
+
+# ensure correct permissions
 #chmod 755 /home
 #chown root:root /home
-pushd /opt/home-init
+pushd /home
 for d in $(ls -d *); do
-  if [ -d $d ]; then
-    # copy if does not already exist (TODO: one-way sync?)
-    [ -d /home/$d ] || cp -a $d /home/
-    # ensure correct user permissions
-    # since UID could have been altered by modifying users.csv
+  if [ -d /home/$d ]; then
+    # necessary since UID could have been altered by modifying users.csv
     id $d && chown -R $d:conjuring /home/$d
   fi
 done
