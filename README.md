@@ -44,11 +44,11 @@ The Conjuring JupyterHub machine should be built and accessible via a browser on
 <http://localhost:8989>.
 
 To shut down, run `docker-compose down`.
-Student home directories will persist in the `custom/home/` folder with the
-correct access permissions.
+Student home directories will persist in the [custom/home/](custom/home/)
+folder with the correct access permissions.
 
 ### Customisation
-Configuration files are all found within the `custom` directory.
+Configuration files are all found within the [custom/](custom/) directory.
 
 - Define packages to `apt install`
     + Modify [apt.txt](custom/apt.txt)
@@ -83,8 +83,8 @@ TODO: `cron`, sync policy.
 If you are not familiar with docker, it may seem quite complicated.
 This overview (combined with the [glossary](#glossary) below) might help.
 
-`docker-compose` reads `docker-compose.yml` (and if it exits,
-`docker-compose.override.yml`) in order to make the following happen:
+`docker-compose` reads [docker-compose.yml](docker-compose.yml) (and if it
+exits, `docker-compose.override.yml`) in order to make the following happen:
 
 1. `docker` downloads the latest version of the `ubuntu:18.04` *image*
 2. `docker` follows the instructions in
@@ -102,7 +102,7 @@ This overview (combined with the [glossary](#glossary) below) might help.
    (based on `casperdcl/conjuring:latest`) which also does the following:
     - links [custom/home/](custom/home/) to `conjuring:/home/`
     - populates the container user home directories (`conjuring:/home/*`)
-        * links `custom/shared`
+        * links [custom/shared/](custom/shared)
     - starts a `JupyterHub` server accessible on the host at
       <http://localhost:8989>
 
