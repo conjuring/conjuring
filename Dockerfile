@@ -56,5 +56,5 @@ COPY custom/srv/* /srv/jupyterhub/
 #RUN jupyterhub --generate-certs  # internal_ssl unnecessary
 
 ENV DEBIAN_FRONTEND ''
-COPY src/entrypoint.sh /bin/
-CMD ["/bin/entrypoint.sh"]
+COPY src/cmd.sh /bin/
+CMD ["/bin/cmd.sh"]
