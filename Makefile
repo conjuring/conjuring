@@ -13,3 +13,5 @@ build:
 	$(DCC) build
 bash:
 	$(DCC) exec $(REPO) bash
+prune:
+	docker system prune
