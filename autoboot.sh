@@ -8,7 +8,7 @@ CUSTOM_DIR='/media/*/*/conjuring/custom'
 # TODO
 
 # sshserver
-sudo service ssh start
+#sudo service ssh start
 
 # docker container with mounted shared folder(s)
 dcc(){
@@ -25,12 +25,12 @@ dccup(){
 usb_monitor(){
   while [ true ]; do
     if [ -n "$usb_found" ]; then
-      # unplugged
-      ls "$CUSTOM_DIR" 2>/dev/null || usb_found=''
+      ls $CUSTOM_DIR &>/dev/null || usb_found=''
+      [ -z "$usb_found" ] && echo unplugged
     else
-      # found dir
-      ls "$CUSTOM_DIR" 2>/dev/null && usb_found="(ls $CUSTOM_DIR)" && (
-        cp -Ru "$CUSTOM_DIR" "$WORKDIR"
+      ls $CUSTOM_DIR 2>/dev/null && usb_found="$CUSTOM_DIR" && (
+        echo found $CUSTOM_DIR
+        cp -Ru $CUSTOM_DIR "$WORKDIR"
         # TODO: overwrite?
         # TODO: backup?
         # TODO: copy missing back? cp -au "$WORKDIR"/custom "$CUSTOM_DIR"/..
