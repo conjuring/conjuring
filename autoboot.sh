@@ -37,6 +37,12 @@ usb_monitor(){
           [ -f $CUSTOM_DIR/../$f ] && \
          cp -u $CUSTOM_DIR/../$f "$WORKDIR"/../
         done
+        # backup homes
+        pushd "$WORKDIR"/custom/home
+        [ -d $CUSTOM_DIR/home_backup ] && \
+          sudo tar -upv --exclude-backups -f $CUSTOM_DIR/home_backup/home.tar *
+        # rsync -au --delete "$WORKDIR"/custom/home/ $CUSTOM_DIR/home
+        popd
 
         # TODO: overwrite?
         # TODO: backup?
