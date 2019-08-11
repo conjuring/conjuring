@@ -3,6 +3,7 @@
 # Options
 WORKDIR=${PWD}
 CUSTOM_DIR='/media/*/*/conjuring/custom'
+CUSTOM_ROOT_FILES="docker-compose.override.yml"
 
 # auto-start WiFi hotspot
 # TODO
@@ -29,12 +30,19 @@ usb_monitor(){
       [ -z "$usb_found" ] && echo unplugged
     else
       ls $CUSTOM_DIR 2>/dev/null && usb_found="$CUSTOM_DIR" && (
-        echo found $CUSTOM_DIR
+        echo copying found $CUSTOM_DIR
         cp -Ru $CUSTOM_DIR "$WORKDIR"
+        # custom root files
+        for f in $CUSTOM_ROOT_FILES; do
+          [ -f $CUSTOM_DIR/../$f ] && \
+         cp -u $CUSTOM_DIR/../$f "$WORKDIR"/../
+        done
+
         # TODO: overwrite?
         # TODO: backup?
         # TODO: copy missing back? cp -au "$WORKDIR"/custom "$CUSTOM_DIR"/..
         # TODO: check for multiple USB?
+
         dcc down
         # TODO: maybe don't bring container down if updateable live?
         dccup
