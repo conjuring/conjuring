@@ -9,7 +9,7 @@ CUSTOM_ROOT_FILES="docker-compose.override.yml"
 # TODO
 
 # sshserver
-#sudo service ssh start
+sudo service ssh start
 
 # docker container with mounted shared folder(s)
 dcc(){
@@ -76,7 +76,7 @@ usb_monitor(){
 }
 
 # build and run container
-dccup
+dccup > $WORKDIR/conjuring.log
 
-usb_monitor &
+usb_monitor >> $WORKDIR/conjuring.log 2>&1 &
 wait
