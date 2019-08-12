@@ -69,7 +69,7 @@ usb_monitor(){
         log info pull custom root files from media
         for f in $CUSTOM_ROOT_FILES; do
           [ -f $CUSTOM_DIR/../$f ] && \
-         cp -u $CUSTOM_DIR/../$f "$WORKDIR"/../
+         cp -u $CUSTOM_DIR/../$f "$WORKDIR"/
         done
         if [ -d $CUSTOM_DIR/home_backup ]; then
          log info push homes to media
@@ -79,7 +79,13 @@ usb_monitor(){
          else
            log info tar
            pushd "$WORKDIR"/custom/home
-           sudo tar -upv --exclude-backups -f $CUSTOM_DIR/home_backup/home.tar *
+           if [ -f $CUSTOM_DIR/home_backup/home.tar ]; then
+             log debug updating
+             sudo tar -upv --exclude-backups -f $CUSTOM_DIR/home_backup/home.tar *
+           else
+             log debug creating
+             sudo tar -cpv --exclude-backups -f $CUSTOM_DIR/home_backup/home.tar *
+           fi
            popd
          fi
         fi
