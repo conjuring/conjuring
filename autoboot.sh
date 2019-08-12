@@ -22,6 +22,19 @@ dccup(){
   dcc up --build -d
 }
 
+supports_perms(){
+  type=$(df -T "$1" | awk 'NR==2{print $2}')
+  case $type in
+  btrfs|ext*|?fs)
+    return 0
+    ;;
+  *)
+    return 1
+    ;;
+  esac
+  return 2
+}
+
 # monitor for a USB storage device containing additional config
 usb_monitor(){
   while [ true ]; do
@@ -32,17 +45,21 @@ usb_monitor(){
       ls $CUSTOM_DIR 2>/dev/null && usb_found="$CUSTOM_DIR" && (
         echo copying found $CUSTOM_DIR
         cp -Ru $CUSTOM_DIR "$WORKDIR"
-        # custom root files
+        # pull custom root files from media
         for f in $CUSTOM_ROOT_FILES; do
           [ -f $CUSTOM_DIR/../$f ] && \
          cp -u $CUSTOM_DIR/../$f "$WORKDIR"/../
         done
-        # backup homes
-        pushd "$WORKDIR"/custom/home
-        [ -d $CUSTOM_DIR/home_backup ] && \
-          sudo tar -upv --exclude-backups -f $CUSTOM_DIR/home_backup/home.tar *
-        # rsync -au --delete "$WORKDIR"/custom/home/ $CUSTOM_DIR/home
-        popd
+        # push homes to media
+        if [ -d $CUSTOM_DIR/home_backup ]; then
+         if supports_perms $CUSTOM_DIR/home_backup; then
+           sudo rsync -au --delete "$WORKDIR"/custom/home/ $CUSTOM_DIR/home_backup
+         else
+           pushd "$WORKDIR"/custom/home
+           sudo tar -upv --exclude-backups -f $CUSTOM_DIR/home_backup/home.tar *
+           popd
+         fi
+        fi
 
         # TODO: overwrite?
         # TODO: backup?
