@@ -24,10 +24,10 @@ log(){
   esac
 }
 
-# auto-start WiFi hotspot
-# TODO
+log info Starting 'Wi-Fi: "Hotspot"'
+nmcli connection up Hotspot &> $LOG_FILE
 
-log debug ensuring sshserver &> $LOG_FILE
+log debug Ensuring sshserver &> $LOG_FILE
 sudo service ssh start
 
 # docker container with mounted shared folder(s)
@@ -56,34 +56,34 @@ supports_perms(){
 }
 
 usb_monitor(){
-  log info monitor for a USB storage device containing additional config
+  log info Monitor for a USB storage device containing additional config
   while [ true ]; do
     if [ -n "$usb_found" ]; then
       ls $CUSTOM_DIR &>/dev/null || usb_found=''
-      [ -z "$usb_found" ] && log info unplugged
+      [ -z "$usb_found" ] && log info Unplugged
     else
       ls $CUSTOM_DIR 1>/dev/null && usb_found="$CUSTOM_DIR" && (
-        log info copying found $CUSTOM_DIR
+        log info Copying found $CUSTOM_DIR
         cp -Ru $CUSTOM_DIR "$WORKDIR"
         # rm -rf "$WORKDIR"/custom/home_backup  # TODO: avoid this copy
-        log info pull custom root files from media
+        log info Pull custom root files from media
         for f in $CUSTOM_ROOT_FILES; do
           [ -f $CUSTOM_DIR/../$f ] && \
          cp -u $CUSTOM_DIR/../$f "$WORKDIR"/
         done
         if [ -d $CUSTOM_DIR/home_backup ]; then
-         log info push homes to media
+         log info Push homes to media
          if supports_perms $CUSTOM_DIR/home_backup; then
-           log info inplace
+           log info In-place
            sudo rsync -au --delete "$WORKDIR"/custom/home/ $CUSTOM_DIR/home_backup
          else
            log info tar
            pushd "$WORKDIR"/custom/home
            if [ -f $CUSTOM_DIR/home_backup/home.tar ]; then
-             log debug updating
+             log debug Updating tar
              sudo tar -upv --exclude-backups -f $CUSTOM_DIR/home_backup/home.tar *
            else
-             log debug creating
+             log debug Creating tar
              sudo tar -cpv --exclude-backups -f $CUSTOM_DIR/home_backup/home.tar *
            fi
            popd
@@ -104,7 +104,7 @@ usb_monitor(){
   done
 }
 
-log info build and run container >> $LOG_FILE 2>&1
+log info Build and run container >> $LOG_FILE 2>&1
 dccup >> $LOG_FILE 2>&1
 
 usb_monitor >> $LOG_FILE 2>&1 &
