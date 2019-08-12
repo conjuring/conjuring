@@ -69,12 +69,28 @@ Configuration files are all found within the [custom/](custom/) directory.
 
 ### Auto-boot
 A physical server can be configured to automatically start conjuring upon
-bootup, and monitor for external USB drives with additional configuration.
+bootup, start a hotspot (or connect to a network),
+and monitor for external USB drives with additional configuration.
 
-Use the [autoboot.sh](autoboot.sh) script for this purpose.
-The path monitored for a configuration folder is `/media/*/*/conjuring/custom`.
+- Use the [autoboot.sh](autoboot.sh) script for this purpose
+    + Run `crontab -e` and add `@reboot cd /path/to/conjuring && ./autoboot.sh`
+    + Run `sudo apt-get install git openssh-server make sudo`
+    + Run `sudo visudo` and add the line `%sudo ALL=(ALL) NOPASSWD:ALL`
+    + Enable `Settings` > `Details` > `Users` > `Automatic Login`
 
-TODO: `cron`, sync policy.
+Notes:
+
+- The path monitored for a configuration folder is `/media/*/*/conjuring/custom`
+- The default network which is connected to is called `Hotspot`
+    + This can be set up in `Settings` > `Wi-Fi` > `(settings icon)` >
+      `Turn On Wi-Fi Hotspot...`,
+      then running (in a terminal) `nm-connection-editor` to rename the
+      connection to `Hotspot` and edit the password
+    + Alternatively, choose a different default (e.g. external) network name by
+      modifying `autoboot.sh`
+    + The NUC itself and all clients need to be on the same network. This means
+      that the NUC doesn't have to act as a Wi-Fi hotspot if there's a
+      pre-existing Wi-Fi network which everyone can connect to
 
 # FAQ
 
