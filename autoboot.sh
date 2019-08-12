@@ -23,11 +23,12 @@ log(){
     ;;
   esac
 }
+echo -n '' > $LOG_FILE
 
-log info Starting 'Wi-Fi: "Hotspot"'
-nmcli connection up Hotspot &> $LOG_FILE
+log info Starting 'Wi-Fi: "Hotspot"' >> $LOG_FILE 2>&1
+nmcli connection up Hotspot >> $LOG_FILE 2>&1
 
-log debug Ensuring sshserver &> $LOG_FILE
+log debug Ensuring sshserver >> $LOG_FILE 2>&1
 sudo service ssh start
 
 # docker container with mounted shared folder(s)
@@ -62,7 +63,7 @@ usb_monitor(){
       ls $CUSTOM_DIR &>/dev/null || usb_found=''
       [ -z "$usb_found" ] && log info Unplugged
     else
-      ls $CUSTOM_DIR 1>/dev/null && usb_found="$CUSTOM_DIR" && (
+      ls $CUSTOM_DIR &>/dev/null && usb_found="$CUSTOM_DIR" && (
         log info Copying found $CUSTOM_DIR
         cp -Ru $CUSTOM_DIR "$WORKDIR"
         # rm -rf "$WORKDIR"/custom/home_backup  # TODO: avoid this copy
