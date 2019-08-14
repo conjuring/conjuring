@@ -8,18 +8,24 @@ RUN apt-get -yqq update && apt-get -yqq upgrade && apt-get -yqq install \
   wget git bzip2 \
   && apt-get purge && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# install Python + NodeJS with conda
-RUN wget -q https://repo.continuum.io/miniconda/Miniconda3-4.5.11-Linux-x86_64.sh -O /tmp/miniconda.sh \
+# ensure Python is installed with conda
+RUN which conda || ( \
+  wget -q https://repo.continuum.io/miniconda/Miniconda3-4.5.11-Linux-x86_64.sh -O /tmp/miniconda.sh \
   && echo 'e1045ee415162f944b6aebfe560b8fee */tmp/miniconda.sh' | md5sum -c - \
   && bash /tmp/miniconda.sh -f -b -p /opt/conda \
   && rm /tmp/miniconda.sh \
   && /opt/conda/bin/conda update --all -y -c conda-forge \
-  && /opt/conda/bin/conda install -y -c conda-forge \
-    sqlalchemy tornado jinja2 traitlets requests pip pycurl nodejs configurable-http-proxy \
-  && /opt/conda/bin/pip install -U pip \
-  && /opt/conda/bin/conda install -y -c conda-forge notebook jupyterlab \
-  && /opt/conda/bin/conda clean -a -y
+  && /opt/conda/bin/conda clean -a -y \
+  && /opt/conda/bin/pip install --no-cache-dir -U pip \
+)
+# TODO: only do the follwing if required (https://github.com/moby/moby/issues/29110)
 ENV PATH=/opt/conda/bin:$PATH
+
+# install NodeJS and Jupyter with conda
+RUN conda install -y -c conda-forge \
+    sqlalchemy tornado jinja2 traitlets requests pip pycurl nodejs configurable-http-proxy \
+  && conda install -y -c conda-forge notebook jupyterlab \
+  && conda clean -a -y
 
 RUN pip install --no-cache-dir -U jupyterhub
 
@@ -52,7 +58,7 @@ COPY src/csv2useradd.sh custom/users.csv /opt/
 RUN chmod 400 /opt/users.csv  # keep it secret from container users
 
 # jupyterhub config
-COPY custom/srv/* /srv/jupyterhub/
+COPY custom/srv/* ./
 #RUN jupyterhub --generate-certs  # internal_ssl unnecessary
 
 ENV DEBIAN_FRONTEND ''
