@@ -18,16 +18,15 @@ RUN which conda || ( \
   && /opt/conda/bin/conda clean -a -y \
   && /opt/conda/bin/pip install --no-cache-dir -U pip \
 )
-# TODO: only do the follwing if required (https://github.com/moby/moby/issues/29110)
-ENV PATH=/opt/conda/bin:$PATH
+COPY src/conda.sh /
 
 # install NodeJS and Jupyter with conda
-RUN conda install -y -c conda-forge \
+RUN /conda.sh install -y -c conda-forge \
     sqlalchemy tornado jinja2 traitlets requests pip pycurl nodejs configurable-http-proxy \
-  && conda install -y -c conda-forge notebook jupyterlab \
-  && conda clean -a -y
+  && /conda.sh install -y -c conda-forge notebook jupyterlab \
+  && /conda.sh clean -a -y
 
-RUN pip install --no-cache-dir -U jupyterhub
+RUN $(/conda.sh info --base)/bin/pip install --no-cache-dir -U jupyterhub
 
 RUN mkdir -p /srv/jupyterhub/
 WORKDIR /srv/jupyterhub/
@@ -45,10 +44,10 @@ RUN apt-get -yqq update && (cat apt.txt | xargs apt-get -yqq install) \
   && apt-get purge && apt-get clean && rm -rf /var/lib/apt/lists/* apt.txt
 
 COPY src/env2conda.sh custom/environment*.yml ./
-RUN ./env2conda.sh /opt/conda environment*.yml && conda clean -a -y && rm env2conda.sh environment*.yml
+RUN ./env2conda.sh /conda.sh environment*.yml && /conda.sh clean -a -y && rm env2conda.sh environment*.yml
 
 COPY custom/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt && rm requirements.txt
+RUN $(/conda.sh info --base)/bin/pip install --no-cache-dir -r requirements.txt && rm requirements.txt
 
 # list of users
 ARG GROUP_ID=1000

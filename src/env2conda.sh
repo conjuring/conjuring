@@ -3,11 +3,11 @@ shopt -s extglob
 set -e
 
 if [ ${#} -lt 2 ]; then
-  echo "Usage: env2conda <prefix> <environment.yml>..."
+  echo "Usage: env2conda <condabin> <environment.yml>..."
   exit 1
 fi
 
-prefix=$1
+conda=$1
 env_files="${@:2}"
 
 for f in $env_files; do
@@ -21,13 +21,13 @@ for f in $env_files; do
   # backup (2): set env=base
   env=${env:-base}
   # create/update env
-  echo conda env update -n $env -f=$f 1>&2
-  conda env update -n $env -f=$f
+  echo $conda env update -n $env -f=$f 1>&2
+  $conda env update -n $env -f=$f
   # install kernel
   if [ $env != base ]; then
-    conda install -n $env -y ipykernel
-    source activate $env
-    python -m ipykernel install --prefix="$prefix" --name $env
-    conda deactivate
+    $conda install -n $env -y ipykernel
+    source $($conda info --base)/bin/activate $env
+    python -m ipykernel install --prefix="$($conda info --base)" --name $env
+    $conda deactivate
   fi
 done
