@@ -10,6 +10,8 @@ fi
 conda=$1
 env_files="${@:2}"
 
+prefix="$($conda info --base)"
+
 for f in $env_files; do
   # get env name from file
   env=$(sed -nr 's/^name:\s+(\S+).*$/\1/p' "$f")
@@ -26,8 +28,8 @@ for f in $env_files; do
   # install kernel
   if [ $env != base ]; then
     $conda install -n $env -y ipykernel
-    source $($conda info --base)/bin/activate $env
-    python -m ipykernel install --prefix="$($conda info --base)" --name $env
-    $conda deactivate
+    source "$prefix/bin/activate" $env
+    python -m ipykernel install --prefix="$prefix" --name $env
+    conda deactivate
   fi
 done

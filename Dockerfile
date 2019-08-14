@@ -31,7 +31,7 @@ RUN $(/conda.sh info --base)/bin/pip install --no-cache-dir -U jupyterhub
 RUN mkdir -p /srv/jupyterhub/
 WORKDIR /srv/jupyterhub/
 EXPOSE 8000
-CMD ["jupyterhub"]
+CMD ["/conda.sh", "path_exec", "jupyterhub"]
 
 ## first half (rarely changing core) complete ##
 ## ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ##
@@ -58,7 +58,7 @@ RUN chmod 400 /opt/users.csv  # keep it secret from container users
 
 # jupyterhub config
 COPY custom/srv/* ./
-#RUN jupyterhub --generate-certs  # internal_ssl unnecessary
+#RUN /conda.sh path_exec jupyterhub --generate-certs  # internal_ssl unnecessary
 
 ENV DEBIAN_FRONTEND ''
 COPY src/cmd.sh /bin/

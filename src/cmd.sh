@@ -19,4 +19,4 @@ for d in $(ls -d *); do
 done
 popd
 
-jupyterhub
+/conda.sh path_exec jupyterhub
