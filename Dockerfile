@@ -17,9 +17,12 @@ RUN which conda || ( \
   && /opt/conda/bin/conda update --all -y -c conda-forge \
   && /opt/conda/bin/conda clean -a -y \
 )
+# auto-find conda helper script
 COPY src/conda.sh /
+
+# install pip
 RUN /conda.sh install -c conda-forge -q -y pip \
- && $(/conda.sh info --base)/bin/pip install --no-cache-dir -U pip
+ && /conda.sh path_exec pip install --no-cache-dir -U pip
 
 # install NodeJS and Jupyter with conda
 RUN /conda.sh install -y -c conda-forge \
@@ -27,12 +30,13 @@ RUN /conda.sh install -y -c conda-forge \
   && /conda.sh install -y -c conda-forge notebook jupyterlab \
   && /conda.sh clean -a -y
 
-RUN $(/conda.sh info --base)/bin/pip install --no-cache-dir -U jupyterhub
+RUN /conda.sh path_exec pip install --no-cache-dir -U jupyterhub
 
 RUN mkdir -p /srv/jupyterhub/
 WORKDIR /srv/jupyterhub/
 EXPOSE 8000
-CMD ["/conda.sh", "path_exec", "jupyterhub"]
+ENTRYPOINT ["/conda.sh", "path_exec"]
+CMD ["jupyterhub"]
 
 ## first half (rarely changing core) complete ##
 ## ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ##
@@ -48,7 +52,7 @@ COPY src/env2conda.sh custom/environment*.yml ./
 RUN ./env2conda.sh /conda.sh environment*.yml && /conda.sh clean -a -y && rm env2conda.sh environment*.yml
 
 COPY custom/requirements.txt .
-RUN $(/conda.sh info --base)/bin/pip install --no-cache-dir -r requirements.txt && rm requirements.txt
+RUN /conda.sh path_exec pip install --no-cache-dir -r requirements.txt && rm requirements.txt
 
 # list of users
 ARG GROUP_ID=1000
