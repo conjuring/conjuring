@@ -5,9 +5,7 @@ if [ ${#} -ne 2 ]; then
 fi
 
 # first row is heading
-tail -n+2 "$1" | while read user_pass; do
-  user=$(echo $user_pass | cut -d, -f1)
-  pass=$(echo $user_pass | cut -d, -f2)
+awk -F, 'NR>1{print $1" "$2}' "$1" | while read user pass; do
   useradd -g conjuring -m -K UID_MIN=2000 -k "$2" -p $(echo "$pass" | openssl passwd -1 -stdin) "$user"
   pushd /home/"$user"
     [ -e shared ] || ln -s /shared
