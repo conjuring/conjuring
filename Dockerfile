@@ -16,9 +16,10 @@ RUN which conda || ( \
   && rm /tmp/miniconda.sh \
   && /opt/conda/bin/conda update --all -y -c conda-forge \
   && /opt/conda/bin/conda clean -a -y \
-  && /opt/conda/bin/pip install --no-cache-dir -U pip \
 )
 COPY src/conda.sh /
+RUN /conda.sh install -c conda-forge -q -y pip \
+ && $(/conda.sh info --base)/bin/pip install --no-cache-dir -U pip
 
 # install NodeJS and Jupyter with conda
 RUN /conda.sh install -y -c conda-forge \
