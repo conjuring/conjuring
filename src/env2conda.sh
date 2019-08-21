@@ -13,6 +13,10 @@ env_files="${@:2}"
 prefix="$($conda info --base)"
 
 for f in $env_files; do
+  if [ ! -f $f ]; then
+    echo "E:$(date -Is):$0:could not find $f" 1>&2
+    continue
+  fi
   # get env name from file
   env=$(sed -nr 's/^name:\s+(\S+).*$/\1/p' "$f")
   # backup (1): get env name from filename
@@ -23,7 +27,7 @@ for f in $env_files; do
   # backup (2): set env=base
   env=${env:-base}
   # create/update env
-  echo $conda env update -n $env -f=$f 1>&2
+  echo "I:$(date -Is):$0:$conda env update -n $env -f=$f" 1>&2
   $conda env update -n $env -f=$f
   # install kernel
   if [ $env != base ]; then

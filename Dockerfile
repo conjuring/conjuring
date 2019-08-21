@@ -44,15 +44,22 @@ CMD ["jupyterhub"]
 
 FROM core as conjuring
 
-COPY custom/apt.txt .
-RUN apt-get -yqq update && (cat apt.txt | xargs apt-get -yqq install) \
-  && apt-get purge && apt-get clean && rm -rf /var/lib/apt/lists/* apt.txt
+COPY src/null custom/apt.tx[t] ./
+RUN [ -f apt.txt ] && apt-get -yqq update \
+  && (cat apt.txt | xargs apt-get -yqq install) \
+  && apt-get purge && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* ; \
+  rm -f src/null apt.txt
 
 COPY src/env2conda.sh custom/environment*.yml ./
-RUN ./env2conda.sh /conda.sh environment*.yml && /conda.sh clean -a -y && rm env2conda.sh environment*.yml
+RUN ./env2conda.sh /conda.sh environment*.yml \
+  && /conda.sh clean -a -y \
+  && rm -f env2conda.sh environment*.yml
 
-COPY custom/requirements.txt .
-RUN /conda.sh path_exec pip install --no-cache-dir -r requirements.txt && rm requirements.txt
+COPY src/null custom/requirements.tx[t] ./
+RUN [ -f requirements.txt ] \
+  && /conda.sh path_exec pip install --no-cache-dir -r requirements.txt \
+  && rm -f src/null requirements.txt
 
 # list of users
 ARG GROUP_ID=1000
