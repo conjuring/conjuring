@@ -48,8 +48,9 @@ COPY src/null custom/apt.tx[t] ./
 RUN [ -f apt.txt ] && apt-get -yqq update \
   && (cat apt.txt | xargs apt-get -yqq install) \
   && apt-get purge && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* ; \
-  rm -f src/null apt.txt
+  && rm -rf /var/lib/apt/lists/* \
+  && rm null apt.txt \
+  || rm null
 
 COPY src/env2conda.sh custom/environment*.yml ./
 RUN ./env2conda.sh /conda.sh environment*.yml \
@@ -59,7 +60,8 @@ RUN ./env2conda.sh /conda.sh environment*.yml \
 COPY src/null custom/requirements.tx[t] ./
 RUN [ -f requirements.txt ] \
   && /conda.sh path_exec pip install --no-cache-dir -r requirements.txt \
-  && rm -f src/null requirements.txt
+  && rm null requirements.txt \
+  || rm null
 
 # list of users
 ARG GROUP_ID=1000
