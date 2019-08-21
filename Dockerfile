@@ -8,24 +8,34 @@ RUN apt-get -yqq update && apt-get -yqq upgrade && apt-get -yqq install \
   wget git bzip2 \
   && apt-get purge && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# install Python + NodeJS with conda
-RUN wget -q https://repo.continuum.io/miniconda/Miniconda3-4.5.11-Linux-x86_64.sh -O /tmp/miniconda.sh \
+# ensure Python is installed with conda
+RUN which conda || ( \
+  wget -q https://repo.continuum.io/miniconda/Miniconda3-4.5.11-Linux-x86_64.sh -O /tmp/miniconda.sh \
   && echo 'e1045ee415162f944b6aebfe560b8fee */tmp/miniconda.sh' | md5sum -c - \
   && bash /tmp/miniconda.sh -f -b -p /opt/conda \
   && rm /tmp/miniconda.sh \
   && /opt/conda/bin/conda update --all -y -c conda-forge \
-  && /opt/conda/bin/conda install -y -c conda-forge \
-    sqlalchemy tornado jinja2 traitlets requests pip pycurl nodejs configurable-http-proxy \
-  && /opt/conda/bin/pip install -U pip \
-  && /opt/conda/bin/conda install -y -c conda-forge notebook jupyterlab \
-  && /opt/conda/bin/conda clean -a -y
-ENV PATH=/opt/conda/bin:$PATH
+  && /opt/conda/bin/conda clean -a -y \
+)
+# auto-find conda helper script
+COPY src/conda.sh /
 
-RUN pip install --no-cache-dir -U jupyterhub
+# install pip
+RUN /conda.sh install -c conda-forge -q -y pip \
+ && /conda.sh path_exec pip install --no-cache-dir -U pip
+
+# install NodeJS and Jupyter with conda
+RUN /conda.sh install -y -c conda-forge \
+    sqlalchemy tornado jinja2 traitlets requests pip pycurl nodejs configurable-http-proxy \
+  && /conda.sh install -y -c conda-forge notebook jupyterlab \
+  && /conda.sh clean -a -y
+
+RUN /conda.sh path_exec pip install --no-cache-dir -U jupyterhub
 
 RUN mkdir -p /srv/jupyterhub/
 WORKDIR /srv/jupyterhub/
 EXPOSE 8000
+ENTRYPOINT ["/conda.sh", "path_exec"]
 CMD ["jupyterhub"]
 
 ## first half (rarely changing core) complete ##
@@ -34,15 +44,24 @@ CMD ["jupyterhub"]
 
 FROM core as conjuring
 
-COPY custom/apt.txt .
-RUN apt-get -yqq update && (cat apt.txt | xargs apt-get -yqq install) \
-  && apt-get purge && apt-get clean && rm -rf /var/lib/apt/lists/* apt.txt
+COPY src/null custom/apt.tx[t] ./
+RUN [ -f apt.txt ] && apt-get -yqq update \
+  && (cat apt.txt | xargs apt-get -yqq install) \
+  && apt-get purge && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
+  && rm null apt.txt \
+  || rm null
 
 COPY src/env2conda.sh custom/environment*.yml ./
-RUN ./env2conda.sh /opt/conda environment*.yml && conda clean -a -y && rm env2conda.sh environment*.yml
+RUN ./env2conda.sh /conda.sh environment*.yml \
+  && /conda.sh clean -a -y \
+  && rm -f env2conda.sh environment*.yml
 
-COPY custom/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt && rm requirements.txt
+COPY src/null custom/requirements.tx[t] ./
+RUN [ -f requirements.txt ] \
+  && /conda.sh path_exec pip install --no-cache-dir -r requirements.txt \
+  && rm null requirements.txt \
+  || rm null
 
 # list of users
 ARG GROUP_ID=1000
@@ -52,8 +71,8 @@ COPY src/csv2useradd.sh custom/users.csv /opt/
 RUN chmod 400 /opt/users.csv  # keep it secret from container users
 
 # jupyterhub config
-COPY custom/srv/* /srv/jupyterhub/
-#RUN jupyterhub --generate-certs  # internal_ssl unnecessary
+COPY custom/srv/* ./
+#RUN /conda.sh path_exec jupyterhub --generate-certs  # internal_ssl unnecessary
 
 ENV DEBIAN_FRONTEND ''
 COPY src/cmd.sh /bin/

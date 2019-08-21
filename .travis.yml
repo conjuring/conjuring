@@ -5,10 +5,6 @@ notifications:
  email: false
 install:
 - export DCC="docker-compose -p travis_${TRAVIS_JOB_NUMBER/./_}"
-- $DCC build --pull base
-- $DCC build
+- make DCC="$DCC" build
 script:
-- $DCC up -d
-- $DCC exec conjuring bash -c "conda env list"
-- $DCC exec conjuring bash -c "ls -la /home/"
-- $DCC down
+- make DCC="$DCC" test
