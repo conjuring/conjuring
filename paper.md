@@ -11,6 +11,7 @@ authors:
  - name: Daniel Arribas-Bel
    affiliation: 1
  - name: Steffen Zschaler
+   orcid: 0000-0001-9062-6637
    affiliation: 1
  - name: Jonathan Reades
    affiliation: 1
