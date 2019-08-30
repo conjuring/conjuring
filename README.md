@@ -1,9 +1,14 @@
 # Conjuring
 
-[![CI-badge]][CI]
-
 *Conjuring* provides an easy way for students and teachers to use Python for a
 course.
+
+[![CI-badge]][CI]
+
+Technically, Conjuring can be viewed as a multi-user ([`jupyterhub`]) version of
+[`repo2docker`] (turn `git` repositories into *Jupyter*-enabled *Docker* Images)
+without requiring Python on the host. Don't worry if that sounds unintelligible.
+It's really cool. Trust us.
 
 Specifically, Conjuring is designed with [Geocomputing at KCL in mind][geocomp];
 though is general enough to be used for any course.
@@ -21,7 +26,9 @@ manually install it ourselves. It would be painful to provide installation
 instructions for all operating systems. Instead, we provide a docker container
 (which can run on any supported OS). The container itself runs Ubuntu 18.04.
 
-[geocomp]: TODO
+[`jupyterhub`]: https://github.com/jupyterhub/jupyterhub
+[`repo2docker`]: https://github.com/jupyter/repo2docker
+[geocomp]: https://www.kcl.ac.uk/sspp/departments/geography/research/Research-Domains/Geocomputation/About-Us
 [TLJH]: https://tljh.jupyter.org
 [Z2JH]: https://z2jh.jupyter.org
 
