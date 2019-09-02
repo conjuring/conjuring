@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 # This script is designed to make it easy (easier) to create the CSV file
 # of usernames and passwords expected by the Conjuring Dockerfile. We need
