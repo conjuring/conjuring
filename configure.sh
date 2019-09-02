@@ -1,0 +1,1 @@
+python ./src/configure.py "$@"
