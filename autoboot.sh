@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Options
-HOTSPOT_NM='Hotspot'
+HOTSPOT_NM='Conjuring Hotspot'
 WORKDIR="${PWD}"
 LOG_FILE="$WORKDIR"/conjuring.log
 CUSTOM_DIR='/media/*/*/conjuring/custom'
@@ -27,7 +27,7 @@ log(){
 echo -n '' > $LOG_FILE
 
 log info Starting $'Wi-Fi: \"'"$HOTSPOT_NM"$'\"' >> $LOG_FILE 2>&1
-nmcli connection up Hotspot >> $LOG_FILE 2>&1
+nmcli connection up $'\"'"$HOTSPOT_NM"$'\"' >> $LOG_FILE 2>&1
 
 log debug Ensuring sshserver >> $LOG_FILE 2>&1
 sudo service ssh start
