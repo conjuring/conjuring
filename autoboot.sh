@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
 # Options
-HOTSPOT_NM='Conjuring Hotspot'
+WIFI_SERVE_NET=Hotspot
+WIFI_BUILD_NET=""  # e.g. eduroam. TODO: special value for auto?
 WORKDIR="${PWD}"
 LOG_FILE="$WORKDIR"/conjuring.log
 CUSTOM_DIR='/media/*/*/conjuring/custom'
@@ -26,11 +27,16 @@ log(){
 }
 echo -n '' > $LOG_FILE
 
-log info Starting $'Wi-Fi: \"'"$HOTSPOT_NM"$'\"' >> $LOG_FILE 2>&1
-nmcli connection up $'\"'"$HOTSPOT_NM"$'\"' >> $LOG_FILE 2>&1
-
 log debug Ensuring sshserver >> $LOG_FILE 2>&1
 sudo service ssh start
+
+netup(){
+  if [ -n "$1" ]; then
+    log info Starting/connecting to network: "'$1'" >> $LOG_FILE 2>&1
+    nmcli connection up "$1" >> $LOG_FILE 2>&1
+  fi
+}
+# netup "$WIFI_BUILD_NET"
 
 # docker container with mounted shared folder(s)
 dcc(){
@@ -40,8 +46,10 @@ dcc(){
   popd
 }
 dccup(){
+  netup "$WIFI_BUILD_NET"
   dcc build --pull base
   dcc up --build -d
+  netup "$WIFI_SERVE_NET"
 }
 
 supports_perms(){
