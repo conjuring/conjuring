@@ -1,3 +1,3 @@
-name,password (first row is header)
+name,password,admin (first row is header)
 john,aBadPswd
-jane,0zSndTSHd
+jane,0zSndTSHd,true
