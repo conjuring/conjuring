@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""
+"""Conjuring user.csv creation helper.
+
 This script is designed to make it easy (easier) to create the CSV file
 of usernames and passwords expected by the Conjuring Dockerfile. We need
 to do this because JupyterHub expects all users to have entries in PAM
@@ -73,7 +74,7 @@ if args.unsafe_pwd is not None:
 # initialise our starting point as the maximum + 1 of the _previous_ list of user numbers.
 start_pt = 1
 write_md = "w"
-if args.append is True:
+if args.append:
     # Read in the file
     with open(users_file, "r") as csvfile:
         pwd = csv.reader(csvfile, delimiter=",", quotechar='"')
@@ -83,7 +84,7 @@ if args.append is True:
         # admin user. Note that this assumes you're aren't changing the
         # settings after running the users script for the first time!
         try:
-            last_user = list(pwd)[(-2 if args.create_admin is True else -1)][
+            last_user = list(pwd)[(-2 if args.create_admin else -1)][
                 0
             ]  # Ternary operator to switch between -1 and -2 from users list
             start_pt = (
@@ -100,7 +101,9 @@ if args.append is True:
 
 # And write the CSV file
 with open(users_file, write_md, newline="") as csvfile:
-    pwd = csv.writer(csvfile, delimiter=",", quotechar="|", quoting=csv.QUOTE_MINIMAL)
+    pwd = csv.writer(
+        csvfile, delimiter=",", quotechar="|", quoting=csv.QUOTE_MINIMAL
+    )
 
     # Only write header row if _not_ appending.
     if args.append is False:
@@ -117,7 +120,10 @@ with open(users_file, write_md, newline="") as csvfile:
             pwd.writerow(
                 [
                     args.usernm + str(i),
-                    "".join(secrets.choice(password_chars) for i in range(args.pwdlen)),
+                    "".join(
+                        secrets.choice(password_chars)
+                        for i in range(args.pwdlen)
+                    ),
                 ]
             )
     print(
@@ -130,13 +136,18 @@ with open(users_file, write_md, newline="") as csvfile:
     # Create admin user. This can be set to False above if script detects that
     # file already exists so that user doesn't accidentally re-create the
     # admin user later.
-    if args.create_admin is True:
+    if args.create_admin:
         pwd.writerow(
             [
                 args.admin_user,
-                "".join(secrets.choice(password_chars) for i in range(args.admin_len)),
+                "".join(
+                    secrets.choice(password_chars)
+                    for i in range(args.admin_len)
+                ),
             ]
         )
-        print("\tCreated admin username (" + args.admin_user + ") and password.")
+        print(
+            "\tCreated admin username (" + args.admin_user + ") and password."
+        )
 
 exit()
