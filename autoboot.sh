@@ -11,6 +11,11 @@ A script which:
 - connects to the specified --serve-net
 - continuously monitors --monitor-dir for additional configuration
 
+Consider adding to system startup using:
+  crontab -e
+and adding the line
+  @reboot cd '$(dirname $0)' && ./autoboot.sh
+
 Flags:
   -h, --help
 Options:
