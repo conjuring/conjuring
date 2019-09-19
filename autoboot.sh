@@ -1,10 +1,94 @@
 #!/usr/bin/env bash
+show_help(){
+echo 'Usage:
+  '$0' [options] [<workdir>]
 
-# Options
-WORKDIR="${PWD}"
-LOG_FILE="$WORKDIR"/conjuring.log
+A script which:
+- starts an ssh server
+- connects to the specified --build-net
+- (re)builds a conjuring docker image based on the given <workdir> configuration
+- starts a conjuring container
+- connects to the specified --serve-net
+- continuously monitors --monitor-dir for additional configuration
+
+Consider adding to system startup using:
+  crontab -e
+and adding the line
+  @reboot cd '$(dirname $0)' && ./autoboot.sh
+
+Flags:
+  -h, --help
+Options:
+  -s, --serve-net  (default: Hotspot)
+  -b, --build-net  (e.g. eduroam)
+  -l, --log-file  (default: conjuring.log)
+  -m, --monitor-dir  (default: /media/*/*/conjuring/custom)
+Arguments:
+  workdir (default: current)
+'
+}
+
+set -o errexit -o pipefail -o noclobber -o nounset
+OPTIND=1  # reset getopts
+
+# defaults
+## options
+WIFI_SERVE_NET=Hotspot
+WIFI_BUILD_NET=""  # TODO: special value for auto?
+LOG_FILE=conjuring.log
 CUSTOM_DIR='/media/*/*/conjuring/custom'
+## arguments
+WORKDIR="${PWD}"
+## internal
 CUSTOM_ROOT_FILES="docker-compose.override.yml"
+
+OPTIONS=hs:b:l:m:
+LONGOPTS=help,serve-net:,build-net:,log-file:,monitor-dir:
+
+! PARSED=$(getopt --options=$OPTIONS --longoptions=$LONGOPTS --name "$0" -- "$@")
+[[ ${PIPESTATUS[0]} -ne 0 ]] && exit 2
+eval set -- "$PARSED"
+
+while true; do
+  case "$1" in
+  -h|--help)
+    show_help
+    exit 0
+    ;;
+  -s|--serve-net)
+    WIFI_SERVE_NET="$2"
+    shift 2
+    ;;
+  -b|--build-net)
+    WIFI_BUILD_NET="$2"
+    shift 2
+    ;;
+  -l|--log-file)
+    LOG_FILE="$2"
+    shift 2
+    ;;
+  -m|--monitor-dir)
+    CUSTOM_DIR="$2"
+    shift 2
+    ;;
+  --)
+    shift
+    break
+    ;;
+  *)
+    echo "Programming error"
+    exit 3
+    ;;
+  esac
+done
+
+shift $((OPTIND-1))
+
+[ "${1:-}" = "--" ] && shift
+
+WORKDIR="${1:-$WORKDIR}"
+
+# end options
 
 log(){
   level=$1
@@ -23,13 +107,19 @@ log(){
     ;;
   esac
 }
+rm -f $LOG_FILE
 echo -n '' > $LOG_FILE
-
-log info Starting 'Wi-Fi: "Hotspot"' >> $LOG_FILE 2>&1
-nmcli connection up Hotspot >> $LOG_FILE 2>&1
 
 log debug Ensuring sshserver >> $LOG_FILE 2>&1
 sudo service ssh start
+
+netup(){
+  if [ -n "$1" ]; then
+    log info Starting/connecting to network: "'$1'" >> $LOG_FILE 2>&1
+    nmcli connection up "$1" >> $LOG_FILE 2>&1
+  fi
+}
+# netup "$WIFI_BUILD_NET"
 
 # docker container with mounted shared folder(s)
 dcc(){
@@ -39,8 +129,11 @@ dcc(){
   popd
 }
 dccup(){
+  netup "$WIFI_BUILD_NET"
   dcc build --pull base
-  dcc up --build -d
+  dcc up --build --no-start
+  netup "$WIFI_SERVE_NET"
+  dcc up -d
 }
 
 supports_perms(){
@@ -58,6 +151,7 @@ supports_perms(){
 
 usb_monitor(){
   log info Monitor for a USB storage device containing additional config
+  usb_found=""
   while [ true ]; do
     if [ -n "$usb_found" ]; then
       ls $CUSTOM_DIR &>/dev/null || usb_found=''
