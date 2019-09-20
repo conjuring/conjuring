@@ -181,5 +181,5 @@ editor) which runs in a web browser
 
 - *GitHub*: a website which hosts many *git* repositories
 
-[CI-badge]: https://travis-ci.com/casperdcl/conjuring.svg?token=fZcPAkurhLa1iecqAFAV&branch=master
-[CI]: https://travis-ci.com/casperdcl/conjuring
+[CI-badge]: https://travis-ci.org/conjuring/conjuring.svg?branch=master
+[CI]: https://travis-ci.org/conjuring/conjuring
