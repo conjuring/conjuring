@@ -1,4 +1,4 @@
-FROM casperdcl/conjuring:base as core
+FROM conjuring/conjuring:base as core
 LABEL com.jupyter.source="https://hub.docker.com/r/jupyterhub/jupyterhub/dockerfile"
 # modified version of above on this date
 LABEL com.jupyter.date="2019-07-01"

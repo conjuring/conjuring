@@ -2,14 +2,14 @@ version: '3.4'
 services:
  conjuring:
   container_name: conjuring
-  image: casperdcl/conjuring:latest
+  image: conjuring/conjuring:latest
   build:
    context: .
    target: conjuring
    cache_from:
-   - casperdcl/conjuring:base
-   - casperdcl/conjuring:core
-   - casperdcl/conjuring:latest
+   - conjuring/conjuring:base
+   - conjuring/conjuring:core
+   - conjuring/conjuring:latest
    args:
     GROUP_ID: ${GROUPS:-1000}
   depends_on:
@@ -26,22 +26,22 @@ services:
   - ./custom/home_default:/opt/home_default:ro
   - ./custom/home:/home
  core:
-  image: casperdcl/conjuring:core
+  image: conjuring/conjuring:core
   build:
    context: .
    target: core
    cache_from:
-   - casperdcl/conjuring:base
-   - casperdcl/conjuring:core
+   - conjuring/conjuring:base
+   - conjuring/conjuring:core
   depends_on:
   - base
   command: ["/bin/bash", "-c", "exit 0"]
  base:
-  image: casperdcl/conjuring:base
+  image: conjuring/conjuring:base
   build:
    context: .
    dockerfile: custom/base.Dockerfile
    target: base
    cache_from:
-   - casperdcl/conjuring:base
+   - conjuring/conjuring:base
   command: ["/bin/bash", "-c", "exit 0"]

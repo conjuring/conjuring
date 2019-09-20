@@ -112,17 +112,17 @@ exits, `docker-compose.override.yml`) in order to make the following happen:
 1. `docker` downloads the latest version of the `ubuntu:18.04` *image*
 2. `docker` follows the instructions in
    [custom/base.Dockerfile](custom/base.Dockerfile) to (re)build
-   an *image* called `casperdcl/conjuring:base` (based on `ubuntu:18.04`)
+   an *image* called `conjuring/conjuring:base` (based on `ubuntu:18.04`)
 3. `docker` follows the instructions in the first half of
    [Dockerfile](Dockerfile) to (re)build an *image* called
-   `casperdcl/conjuring:core` (based on `casperdcl/conjuring:base`)
+   `conjuring/conjuring:core` (based on `conjuring/conjuring:base`)
 4. `docker` follows the instructions in the second half of
    [Dockerfile](Dockerfile) to (re)build an *image* called
-   `casperdcl/conjuring:latest` (based on `casperdcl/conjuring:core`)
+   `conjuring/conjuring:latest` (based on `conjuring/conjuring:core`)
     - this references files from the [src/](src/) and [custom/](custom/)
       directories to create users and Jupyter environments
 5. `docker` creates a *container* called `conjuring`
-   (based on `casperdcl/conjuring:latest`) which also does the following:
+   (based on `conjuring/conjuring:latest`) which also does the following:
     - links [custom/home/](custom/home/) to `conjuring:/home/`
     - links [custom/home_default/](custom/home_default) (read-only)
     - populates the container user home directories (`conjuring:/home/*`)
@@ -146,7 +146,7 @@ Run `docker system prune` to clear unused cache.
       (e.g. `apt-get install git`)
 - *Image*: a sequence of *layers* (applied on top of a *base image*)
     + analogous to a clean OS with things set up as specified in `custom/`
-      (in this case *tagged* `casperdcl/conjuring:latest`)
+      (in this case *tagged* `conjuring/conjuring:latest`)
 - *Container*: a sandboxed workspace derived from an *image*
     + analogous to a running virtual machine (in this case named `conjuring`)
     + easily stoppable, restartable, and disposable
