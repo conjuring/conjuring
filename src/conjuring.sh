@@ -6,6 +6,7 @@ Conjuring install helper.
 Available commands:
 - $0 up
 - $0 config
+- $0 uninstall
 
 Steps to use:
 - install \`git\`
@@ -64,6 +65,9 @@ docker-compose up --build -d
 case "$1" in
   up|"")
     up "${@:2}"
+    ;;
+  uninstall)
+    rm -rf ~/.conjuring
     ;;
   config)
     config "${@:2}"
