@@ -1,19 +1,33 @@
 #!/usr/bin/env bash
-help='
-Conjuring install helper. Steps to use:
+help(){
+cat << EOF
+Conjuring install helper.
 
-- install `git`
-  + `sudo apt-get install git curl` (linux)
-  + `brew install git curl` (mac)
-  + https://git-scm.com/download (win, includes `git-bash` and `curl` etc.)
-- (win) open `git-bash` terminal
-- `curl -o conjuring https://raw.githubusercontent.com/conjuring/conjuring/master/src/conjuring.sh`
-  + or e.g. `curl -o ~/.local/bin/conjuring https://conjuring.github.io/conjuring.sh`
-- `./conjuring`
-'
+Available commands:
+- $0 up
+- $0 config
+
+Steps to use:
+- install \`git\`
+  + \`sudo apt-get install git curl\` (linux)
+  + \`brew install git curl\` (mac)
+  + https://git-scm.com/download (win, includes \`git-bash\` and \`curl\` etc.)
+- (win) open \`git-bash\` terminal
+- \`curl -o conjuring https://raw.githubusercontent.com/conjuring/conjuring/master/src/conjuring.sh\`
+  + or e.g. \`curl -o ~/.local/bin/conjuring https://conjuring.github.io/conjuring.sh\`
+- \`./conjuring\`
+EOF
+}
 set -e
 
 CWD="${PWD}"
+
+config(){
+# TODO: prevent irrelevant git-confog optiona
+git config --file conjuring.ini "$@"
+}
+
+up(){
 echo "Ensuring conjuring is up-to-date in ~/.conjuring"
 [ -d ~/.conjuring ] || git clone https://github.com/conjuring/conjuring ~/.conjuring
 pushd ~/.conjuring
@@ -45,3 +59,16 @@ esac
 popd
 
 docker-compose up --build -d
+}
+
+case "$1" in
+  up|"")
+    up "${@:2}"
+    ;;
+  config)
+    config "${@:2}"
+    ;;
+  *)
+    help >&2
+    ;;
+esac
