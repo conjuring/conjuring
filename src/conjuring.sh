@@ -4,8 +4,9 @@ cat << EOF
 Conjuring install helper.
 
 Available commands:
-- $0 up
+- $0 up  # will also `install`
 - $0 config
+- $0 install
 - $0 uninstall
 
 Steps to use:
@@ -24,11 +25,11 @@ set -e
 CWD="${PWD}"
 
 config(){
-# TODO: prevent irrelevant git-confog optiona
+# TODO: prevent irrelevant git-config options
 git config --file conjuring.ini "$@"
 }
 
-up(){
+install_system(){
 echo "Ensuring conjuring is up-to-date in ~/.conjuring"
 [ -d ~/.conjuring ] || git clone https://github.com/conjuring/conjuring ~/.conjuring
 pushd ~/.conjuring
@@ -58,13 +59,19 @@ case "$overwrite" in
     ;;
 esac
 popd
+}
 
+up(){
+install_system
 docker-compose up --build -d
 }
 
 case "$1" in
   up|"")
     up "${@:2}"
+    ;;
+  install)
+    install_system
     ;;
   uninstall)
     rm -rf ~/.conjuring
