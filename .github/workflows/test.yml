@@ -1,0 +1,19 @@
+name: Test
+on:
+  push:
+  pull_request:
+  schedule:
+  - cron: '1 0 * * 6'  # M H d m w (Saturdays at 0:01)
+jobs:
+  test:
+    if: github.event_name != 'pull_request' || github.head_ref != 'devel'
+    runs-on: ubuntu-latest
+    name: test
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: |
+        make DCC="docker-compose -p gh_${{ github.run_id }}" build
+    - name: Test
+      run: |
+        make DCC="docker-compose -p gh_${{ github.run_id }}" test

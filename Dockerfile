@@ -10,8 +10,8 @@ RUN apt-get -yqq update && apt-get -yqq upgrade && apt-get -yqq install \
 
 # ensure Python is installed with conda
 RUN which conda || ( \
-  wget -q https://repo.continuum.io/miniconda/Miniconda3-4.7.12.1-Linux-x86_64.sh -O /tmp/miniconda.sh \
-  && echo '81c773ff87af5cfac79ab862942ab6b3 */tmp/miniconda.sh' | md5sum -c - \
+  wget -q https://repo.anaconda.com/miniconda/Miniconda3-py37_4.9.2-Linux-x86_64.sh -O /tmp/miniconda.sh \
+  && echo '3143b1116f2d466d9325c206b7de88f7 */tmp/miniconda.sh' | md5sum -c - \
   && bash /tmp/miniconda.sh -f -b -p /opt/conda \
   && rm /tmp/miniconda.sh \
   && /opt/conda/bin/conda update --all -y -c conda-forge \

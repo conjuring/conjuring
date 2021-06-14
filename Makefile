@@ -13,8 +13,8 @@ build:
 	$(DCC) build
 test:
 	$(MAKE) up
-	$(DCC) exec conjuring bash -c "/conda.sh env list"
-	$(DCC) exec conjuring bash -c "ls -la /home/"
+	$(DCC) exec -T conjuring bash -c "/conda.sh env list"
+	$(DCC) exec -T conjuring bash -c "ls -la /home/"
 	$(MAKE) down
 bash:
 	$(DCC) exec $(REPO) bash
