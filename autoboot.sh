@@ -124,8 +124,8 @@ netup(){
 # docker container with mounted shared folder(s)
 dcc(){
   pushd $WORKDIR
-  log info docker-compose $@
-  docker-compose $@
+  log info docker compose $@
+  docker compose $@
   popd
 }
 dccup(){

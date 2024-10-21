@@ -38,19 +38,19 @@ instructions for all operating systems. Instead, we provide a docker container
 - A machine which is accessible by students
   (e.g. via Ethernet or even a WiFi hotspot)
 - [Docker CE (Community Edition)][docker-ce]
-- [docker-compose][docker-compose]
+- [docker compose][docker compose]
 
 [docker-ce]: https://docs.docker.com/install/
-[docker-compose]: https://github.com/docker/compose/releases
+[docker compose]: https://github.com/docker/compose/releases
 
 ## Instructions
 1. Download and if necessary customise (see below)
-2. Run `docker-compose up --build -d`
+2. Run `docker compose up --build -d`
 
 The Conjuring JupyterHub machine should be built and accessible via a browser on
 <http://localhost:8989>.
 
-To shut down, run `docker-compose down`.
+To shut down, run `docker compose down`.
 Student home directories will persist in the [custom/home/](custom/home/)
 folder with the correct access permissions.
 
@@ -106,7 +106,7 @@ Notes:
 If you are not familiar with docker, it may seem quite complicated.
 This overview (combined with the [glossary](#glossary) below) might help.
 
-`docker-compose` reads [docker-compose.yml](docker-compose.yml) (and if it
+`docker compose` reads [docker-compose.yml](docker-compose.yml) (and if it
 exits, `docker-compose.override.yml`) in order to make the following happen:
 
 1. `docker` downloads the latest version of the `ubuntu:18.04` *image*

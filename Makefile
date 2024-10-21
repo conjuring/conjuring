@@ -1,5 +1,5 @@
 REPO=conjuring
-DCC=docker-compose
+DCC=docker compose
 
 default: buildup bash down
 up:
