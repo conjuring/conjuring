@@ -1,7 +1,7 @@
 FROM conjuring/conjuring:base as core
 LABEL com.jupyter.source="https://hub.docker.com/r/jupyterhub/jupyterhub/dockerfile"
 # modified version of above on this date
-LABEL com.jupyter.date="2019-07-01"
+LABEL com.jupyter.date="2024-10-21"
 LABEL org.jupyter.service="jupyterhub"
 
 RUN apt-get -yqq update && apt-get -yqq upgrade && apt-get -yqq install \
@@ -10,8 +10,8 @@ RUN apt-get -yqq update && apt-get -yqq upgrade && apt-get -yqq install \
 
 # ensure Python is installed with conda
 RUN which conda || ( \
-  wget -q https://repo.anaconda.com/miniconda/Miniconda3-py37_4.9.2-Linux-x86_64.sh -O /tmp/miniconda.sh \
-  && echo '3143b1116f2d466d9325c206b7de88f7 */tmp/miniconda.sh' | md5sum -c - \
+  wget -q https://repo.anaconda.com/miniconda/Miniconda3-py312_24.5.0-0-Linux-x86_64.sh -O /tmp/miniconda.sh \
+  && echo '4b3b3b1b99215e85fd73fb2c2d7ebf318ac942a457072de62d885056556eb83e */tmp/miniconda.sh' | sha256sum -c - \
   && bash /tmp/miniconda.sh -f -b -p /opt/conda \
   && rm /tmp/miniconda.sh \
   && /opt/conda/bin/conda update --all -y -c conda-forge \
@@ -22,7 +22,7 @@ COPY src/conda.sh /
 
 # install pip
 RUN /conda.sh install -c conda-forge -q -y pip \
- && /conda.sh path_exec pip install --no-cache-dir -U pip
+ && /conda.sh config --set pip_interop_enabled True
 
 # install NodeJS and Jupyter with conda
 RUN /conda.sh install -y -c conda-forge \
