@@ -1,4 +1,3 @@
-version: '3.4'
 services:
  conjuring:
   container_name: conjuring
@@ -16,7 +15,7 @@ services:
   - core
   hostname: conjuring
   #network_mode: host
-  #runtime: nvidia
+  #deploy: {resources: {reservations: {devices: [{driver: nvidia, count: all, capabilities: [gpu]}]}}}
   #shm_size: 4gb
   restart: unless-stopped
   ports:

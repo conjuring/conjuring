@@ -1,4 +1,4 @@
-FROM conjuring/conjuring:base as core
+FROM conjuring/conjuring:base AS core
 LABEL com.jupyter.source="https://hub.docker.com/r/jupyterhub/jupyterhub/dockerfile"
 # modified version of above on this date
 LABEL com.jupyter.date="2024-10-21"
@@ -42,7 +42,7 @@ CMD ["jupyterhub"]
 ## ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ==== ##
 ## second half (user customisable build) ##
 
-FROM core as conjuring
+FROM core AS conjuring
 
 COPY src/null custom/apt.tx[t] ./
 RUN [ -f apt.txt ] && apt-get -yqq update \
